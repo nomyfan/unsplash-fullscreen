@@ -11,6 +11,7 @@
 (function () {
   "use strict";
 
+  const buttonID = "unsplash-fullscreen-button";
   function queryGalleryElement() {
     const root = document.querySelector('[data-test="photos-route"]');
     return root && root.querySelector("div>div");
@@ -23,30 +24,21 @@
     const gallery = queryGalleryElement();
     return gallery && gallery.querySelector("button canvas+div>img");
   }
-  function withNonNullish(value, fn, orElse) {
-    if (value !== undefined && value !== null) {
-      return fn(value);
-    } else if (orElse) {
-      return orElse(value);
-    }
-  }
-
-  let rootElement = null;
-  const noop = () => {};
-  let teardown = noop;
 
   function run() {
-    if (!window.location.pathname.startsWith("/photos/")) {
-      teardown();
-      return;
-    }
-    if (rootElement) {
+    if (
+      !document.querySelector('[data-test="client-side-hydration-complete"]') ||
+      !window.location.pathname.startsWith("/photos/") ||
+      document.getElementById(buttonID)
+    ) {
       return;
     }
 
-    withNonNullish(queryHeaderElement(), (headerElement) => {
-      const style = document.createElement("style");
-      style.textContent = `
+    const headerElement = queryHeaderElement();
+    if (!headerElement) return;
+
+    const style = document.createElement("style");
+    style.textContent = `
 .unsplash-fullscreen-button {
   color: white;
   background-color: #fec25a;
@@ -73,30 +65,25 @@
 }
 `;
 
-      const button = document.createElement("button");
-      button.setAttribute("class", "unsplash-fullscreen-button");
-      button.innerHTML = `
+    const button = document.createElement("button");
+    button.setAttribute("id", buttonID);
+    button.setAttribute("class", "unsplash-fullscreen-button");
+    button.innerHTML = `
 <svg viewBox="0 0 24 24" aria-hidden="false">
  <path d="M10 21v-2H6.4l4.5-4.5-1.4-1.4L5 17.6V14H3v7h7Zm4.5-10.1L19 6.4V10h2V3h-7v2h3.6l-4.5 4.5 1.4 1.4Z"></path>
 </svg>`;
-      button.addEventListener("click", (evt) => {
-        withNonNullish(queryImageElement(), (imageElement) => {
-          imageElement.requestFullscreen().catch(() => {
-            alert("fullscreen not supported");
-          });
-        });
+    button.addEventListener("click", (evt) => {
+      const imageElement = queryImageElement();
+      if (!imageElement) return;
+      imageElement.requestFullscreen().catch(() => {
+        alert("fullscreen not supported");
       });
-
-      rootElement = document.createElement("div");
-      rootElement.appendChild(style);
-      rootElement.appendChild(button);
-      headerElement.appendChild(rootElement);
-
-      teardown = () => {
-        rootElement = null;
-        teardown = noop;
-      };
     });
+
+    const rootElement = document.createElement("div");
+    rootElement.appendChild(style);
+    rootElement.appendChild(button);
+    headerElement.appendChild(rootElement);
   }
 
   run();

@@ -10,7 +10,7 @@
     "tampermonkey"
   ],
   "scripts": {
-    "fmt": "prettier --write '**/*.{tsx,ts,json,css,scss,md}'"
+    "fmt": "prettier --write '**/*.{tsx,ts,js,json,css,scss,md}'"
   },
   "devDependencies": {
     "prettier": "^2.8.7"

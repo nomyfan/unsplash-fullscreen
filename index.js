@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Unsplash fullscreen
 // @namespace    https://github.com/nomyfan/unsplash-fullscreen
-// @version      0.2
+// @version      0.3
 // @description  Add a fullscreen button to Unsplash to view photos in fullscreen mode
 // @author       nomyfan(Kim Chan)
 // @match        https://unsplash.com/*

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Unsplash fullscreen
 // @namespace    https://github.com/nomyfan/unsplash-fullscreen
-// @version      0.3
+// @version      0.3.1
 // @description  Add a fullscreen button to Unsplash to view photos in fullscreen mode
 // @author       nomyfan(Kim Chan)
 // @match        https://unsplash.com/*
@@ -80,7 +80,7 @@
            * @type {HTMLImageElement}
            */
           const imageElement = gallery.querySelector(
-            "div:first-child button[type=button] script+div img[srcset]",
+            "button[type=button] img[srcset]",
           );
           if (!imageElement) return;
           imageElement.requestFullscreen().catch(() => {
